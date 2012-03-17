@@ -10,7 +10,9 @@
   "engines": {
     "node": "0.6"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ajncookie": ">=0.0.1"
+  },
   "devDependencies": {},
   "optionalDependencies": {}
 }
