@@ -1,5 +1,5 @@
 /*jslint node: true */
-var cookie = require('./cookie.js');
+var cookie = require('ajncookie');
 var sessionLifeTime = 60000 * 30; // 60 min
 
 var sessions = {};
