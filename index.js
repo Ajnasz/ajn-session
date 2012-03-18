@@ -1,11 +1,25 @@
-/*jslint node: true */
+/*jslint node: true, es5: true */
 var cookie = require('ajncookie');
 var sessionLifeTime = 60000 * 30; // 60 min
 
 var sessions = {};
 
 function generateSession() {
-    var sessionId = new Date().getTime() + Math.floor(Math.random() * 100000);
+    var sessionId = new Date().getTime(),
+        id = '',
+        max = 10,
+        min = 1,
+        chars;
+    chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+          'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    chars = chars.concat(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                         'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                         'V', 'W', 'X', 'Y', 'Z']);
+    chars = chars.concat([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    while (max--) {
+        id += chars[Math.floor(Math.random() * (chars.length - 1 - 1 + 1)) + min];
+    }
+    sessionId += id;
     sessions[sessionId] = {
         date: Date.now(),
         data: {}
@@ -22,7 +36,7 @@ function updateSession(sessionId) {
     if (sessions[sessionId]) {
         sessions[sessionId].date = Date.now();
     } else {
-        console.log('can not update session', sessionId);
+        console.log('can not update session');
         sessionId = generateSession();
     }
     return sessionId;
@@ -31,11 +45,10 @@ function updateSession(sessionId) {
 function createSession(req, res, sessionCookieName) {
     var sessionId = cookie.getCookie(req, sessionCookieName);
     if (!sessionId) {
-        console.log('session cookie not foound');
-
+        // console.log('session cookie not foound');
         sessionId = generateSession();
     } else {
-        console.log('session cookie foound', sessionId);
+        // console.log('session cookie foound');
         sessionId = updateSession(sessionId);
     }
     cookie.setCookie(res, sessionCookieName, sessionId);
@@ -43,7 +56,7 @@ function createSession(req, res, sessionCookieName) {
 }
 
 function invalidateSession(sessionId) {
-    console.log('invalidate sessoin', sessionId);
+    console.log('invalidate session');
 
     if (sessions[sessionId]) {
         sessions[sessionId] = null;
