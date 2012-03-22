@@ -24,7 +24,6 @@ function generateSession() {
         date: Date.now(),
         data: {}
     };
-    console.log('create session');
     return sessionId;
 }
 
@@ -36,7 +35,6 @@ function updateSession(sessionId) {
     if (sessions[sessionId]) {
         sessions[sessionId].date = Date.now();
     } else {
-        console.log('can not update session');
         sessionId = generateSession();
     }
     return sessionId;
@@ -45,10 +43,9 @@ function updateSession(sessionId) {
 function createSession(req, res, sessionCookieName) {
     var sessionId = cookie.getCookie(req, sessionCookieName);
     if (!sessionId) {
-        // console.log('session cookie not foound');
+
         sessionId = generateSession();
     } else {
-        // console.log('session cookie foound');
         sessionId = updateSession(sessionId);
     }
     cookie.setCookie(res, sessionCookieName, sessionId);
@@ -56,8 +53,6 @@ function createSession(req, res, sessionCookieName) {
 }
 
 function invalidateSession(sessionId) {
-    console.log('invalidate session');
-
     if (sessions[sessionId]) {
         sessions[sessionId] = null;
         delete sessions[sessionId];
@@ -89,13 +84,17 @@ Session.prototype.checkDataSize = function (value) {
     var sess = getSession(this.sessionId),
         size = 0;
     Object.keys(sess.data).forEach(function (name) {
-        size += Buffer.byteLength(sess.data[name]);
+        if (sess.data[name]) {
+            size += Buffer.byteLength(sess.data[name]);
+        }
     });
     return (size + Buffer.byteLength(value)) <= this.maxSize;
 };
 Session.prototype.setData = function (name, value) {
     this.sessionId = updateSession(this.sessionId);
-    if (this.checkDataSize(value)) {
+    if (value === null) {
+        setData(this.sessionId, name, value);
+    } else if (this.checkDataSize(value)) {
         setData(this.sessionId, name, value);
     } else {
         throw new RangeError('Can\'t set data, limit exceeded. ');
