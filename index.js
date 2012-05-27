@@ -61,6 +61,12 @@ function invalidateSession(sessionId) {
     return false;
 }
 
+function delData(sessionId, name) {
+    if (sessions[sessionId]) {
+        delete sessions[sessionId].data[name];
+    }
+}
+
 function setData(sessionId, name, value) {
     if (sessions[sessionId]) {
         sessions[sessionId].data[name] = value;
@@ -103,6 +109,10 @@ Session.prototype.setData = function (name, value) {
 Session.prototype.getData = function (name) {
     this.sessionId = updateSession(this.sessionId);
     return getData(this.sessionId, name);
+};
+Session.prototype.delData = function (name) {
+    this.sessionId = updateSession(this.sessionId);
+    delData(this.sessionId, name);
 };
 Session.prototype.invalidate = function () {
     invalidateSession(this.sessionId);
