@@ -1,7 +1,18 @@
 A very simple and lightweight session manager
 
-usage:
 
+Configuration options:
+
+Session.sessionLifeTime
+Number, default is 60000 * 30, which is 60 min
+
+Session.maxSize
+Number, Max size of all data stored per session in bytes, default is 262144 bytes
+
+Session.sessionName
+String, Name of the session cookie, default is 'nodesess';
+
+usage:
 
 var Session = require('../index').Session;
 var http = require('http');
