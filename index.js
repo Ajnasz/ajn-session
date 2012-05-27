@@ -1,6 +1,5 @@
 /*jslint node: true, es5: true */
 var cookie = require('ajncookie');
-var sessionLifeTime = 60000 * 30; // 60 min
 
 var sessions = {};
 
@@ -82,8 +81,8 @@ function getData(sessionId, name) {
 
 function Session(req, res, conf) {
     conf = conf || {};
-    this.maxSize = conf.maxSize || 262144;
-    this.sessionName = conf.sessionName || 'nodesess';
+    this.maxSize = conf.maxSize || Session.maxSize;
+    this.sessionName = conf.sessionName || Session.sessionName;
     this.sessionId = createSession(req, res, this.sessionName);
 }
 Session.prototype.checkDataSize = function (value) {
@@ -118,13 +117,44 @@ Session.prototype.invalidate = function () {
     invalidateSession(this.sessionId);
 };
 
-setInterval(function () {
-    var minLastAccess = Date.now() - sessionLifeTime;
-    Object.keys(sessions).forEach(function (sessionId) {
-        if (sessions[sessionId].date < minLastAccess) {
-            invalidateSession(sessionId);
+var setupSessionCleanup = (function () {
+    var intervalId = null;
+    return function setupSessionCleanup() {
+        if (intervalId) {
+            clearInterval(intervalId);
+        }
+        intervalId = setInterval(function () {
+            var minLastAccess = Date.now() - Session.sessionLifeTime;
+            Object.keys(sessions).forEach(function (sessionId) {
+                if (sessions[sessionId].date < minLastAccess) {
+                    invalidateSession(sessionId);
+                }
+            });
+        }, Session.clearInterval);
+    };
+}());
+
+(function () {
+    var clearIntervalVal = 59000; // every minute
+    Object.defineProperty(Session, 'clearInterval', {
+        enumerable: true,
+        configurable: true,
+        get: function () {
+            return clearIntervalVal;
+        },
+        set: function (val) {
+            clearIntervalVal = val;
+            setupSessionCleanup();
         }
     });
-}, 59000);
+}());
 
+Session.sessionLifeTime = 60000 * 30; // 60 min
+// max size of data per session
+Session.maxSize = 262144;
+// session cookie name
+Session.sessionName = 'nodesess';
+
+
+setupSessionCleanup();
 exports.Session = Session;
