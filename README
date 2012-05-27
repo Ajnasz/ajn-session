@@ -1,1 +1,29 @@
 A very simple and lightweight session manager
+
+usage:
+
+
+var Session = require('../index').Session;
+var http = require('http');
+
+
+var srv = http.createServer(function (req, res) {
+    // initialize a session object on each request, pass the request and
+    // response objects to it it will discover if session is alread set, and
+    // create one if it isn't
+    var session = new Session(req, res);
+
+    // set foo session property value to bar
+    session.setData('foo', 'bar');
+
+    // get foo session property value and print it to console
+    console.log(session.getData('foo'));
+
+    // delete foo session property value to bar
+    session.delData('foo', null);
+
+    // print 'foo' session property to console, it must return undefined
+    console.log(session.getData('foo'));
+    ....
+});
+srv.listen(1111, '127.0.0.1');
