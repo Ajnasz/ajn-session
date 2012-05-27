@@ -2,7 +2,7 @@
   "author": "Lajos Koszti <ajnasz@ajnasz.hu> (http://ajnasz.hu)",
   "name": "ajn-session",
   "description": "A very simple and lightweight session manager",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "url": "git://github.com/Ajnasz/ajn-session.git"
   },
