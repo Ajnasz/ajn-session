@@ -90,7 +90,13 @@ Session.prototype.checkDataSize = function (value) {
         size = 0;
     Object.keys(sess.data).forEach(function (name) {
         if (sess.data[name]) {
-            size += Buffer.byteLength(sess.data[name]);
+            var data = sess.data[name];
+
+            if (typeof data !== 'string') {
+                data = JSON.stringify(sess.data[name]);
+            }
+            
+            size += Buffer.byteLength(data);
         }
     });
 
