@@ -93,7 +93,8 @@ Session.prototype.checkDataSize = function (value) {
             size += Buffer.byteLength(sess.data[name]);
         }
     });
-    return (size + Buffer.byteLength(value)) <= this.maxSize;
+    return true
+    // return (size + Buffer.byteLength(value)) <= this.maxSize;
 };
 Session.prototype.setData = function (name, value) {
     this.sessionId = updateSession(this.sessionId);
