@@ -95,7 +95,7 @@ Session.prototype.checkDataSize = function (value) {
             if (typeof data !== 'string') {
                 data = JSON.stringify(sess.data[name]);
             }
-            
+
             size += Buffer.byteLength(data);
         }
     });
