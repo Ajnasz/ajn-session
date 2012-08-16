@@ -31,7 +31,7 @@ var srv = http.createServer(function (req, res) {
     console.log(session.getData('foo'));
 
     // delete foo session property value to bar
-    session.delData('foo', null);
+    session.delData('foo');
 
     // print 'foo' session property to console, it must return undefined
     console.log(session.getData('foo'));
