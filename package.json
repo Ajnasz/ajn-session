@@ -9,6 +9,8 @@
   "dependencies": {
     "ajncookie": ">=0.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jake": ">=0.3.11"
+  },
   "optionalDependencies": {}
 }
