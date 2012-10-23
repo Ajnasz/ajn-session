@@ -39,15 +39,24 @@ function updateSession(sessionId) {
     return sessionId;
 }
 
-function createSession(req, res, sessionCookieName) {
+function createSession(req, res, sessionCookieName, cookieProps) {
     var sessionId = cookie.getCookie(req, sessionCookieName);
     if (!sessionId) {
-
         sessionId = generateSession();
     } else {
         sessionId = updateSession(sessionId);
     }
-    cookie.setCookie(res, sessionCookieName, sessionId);
+    cookieProps = cookieProps || {};
+    cookie.setCookie(
+        res,
+        sessionCookieName,
+        sessionId,
+        cookieProps.expiration,
+        cookieProps.domain,
+        cookieProps.secure,
+        cookieProps.httpOnly,
+        cookieProps.path
+    );
     return sessionId;
 }
 
@@ -83,7 +92,7 @@ function Session(req, res, conf) {
     conf = conf || {};
     this.maxSize = conf.maxSize || Session.maxSize;
     this.sessionName = conf.sessionName || Session.sessionName;
-    this.sessionId = createSession(req, res, this.sessionName);
+    this.sessionId = createSession(req, res, this.sessionName, conf.cookieProps);
 }
 Session.prototype.checkDataSize = function (value) {
     var sess = getSession(this.sessionId),
